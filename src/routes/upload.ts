@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post('/upload-mp3', upload.single('audio'), async (req: any, res: any) => {
+router.post('/transcription', upload.single('audio'), async (req: any, res: any) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
   }
