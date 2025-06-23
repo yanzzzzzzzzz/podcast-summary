@@ -2,8 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { transcribeAudio } from '../services/whisper';
-
+import { GeminiSummarizeTranscript } from '../services/gemini';
 const router = express.Router();
 
 const uploadDir = path.join(__dirname, '../../uploads');
@@ -19,7 +18,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post('/transcription-to-text', upload.single('audio'), async (req: any, res: any) => {
+router.post('/summarize-transcript', upload.single('audio'), async (req: any, res: any) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
   }
@@ -27,7 +26,7 @@ router.post('/transcription-to-text', upload.single('audio'), async (req: any, r
   const fullPath = path.resolve(req.file.path);
 
   try {
-    const transcript = await transcribeAudio(fullPath);
+    const transcript = await GeminiSummarizeTranscript(fullPath);
     res.json({
       message: 'Transcription successful',
       transcript,

@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google/genai": "^1.5.1",
     "@types/fluent-ffmpeg": "^2.1.27",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
