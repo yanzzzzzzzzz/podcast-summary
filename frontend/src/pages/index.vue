@@ -79,6 +79,7 @@ const summarizeTranscript = async (file: File) => {
 .text-h2 {
   background: linear-gradient(45deg, #7895FF, #6B8AFF);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   font-family: 'Roboto', sans-serif;
   letter-spacing: 1px;
