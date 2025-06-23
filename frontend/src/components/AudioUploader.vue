@@ -73,19 +73,35 @@ function handleFile(file: File) {
 
 <style scoped>
 .audio-uploader {
-  border: 2px dashed #aaa;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
   border-radius: 8px;
   padding: 32px;
   text-align: center;
   cursor: pointer;
-  transition: border-color 0.2s;
+  transition: all 0.3s ease;
+  min-height: 200px;
+  max-height: 300px;
+  min-width: 300px;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.03);
 }
+
+.audio-uploader:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.05);
+}
+
 .audio-uploader.is-dragover {
-  border-color: #1976d2;
-  background: #f0f8ff;
+  border-color: #7895FF;
+  background: rgba(120, 149, 255, 0.1);
 }
+
 .uploader-content {
   font-size: 16px;
-  color: #555;
+  color: rgba(255, 255, 255, 0.87);
+  width: 100%;
 }
 </style>
