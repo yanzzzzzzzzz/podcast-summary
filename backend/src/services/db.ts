@@ -7,10 +7,11 @@ const db = new sqlite3.Database(dbPath);
 const init = () => {
   db.run(`CREATE TABLE IF NOT EXISTS uploads (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    upload_date TEXT NOT NULL,
-    file_name TEXT NOT NULL,
+    uploadDate TEXT NOT NULL,
+    fileName TEXT NOT NULL,
     duration REAL NOT NULL,
-    summary TEXT
+    summary TEXT,
+    saveFileName TEXT NOT NULL
   )`);
 };
 
@@ -19,11 +20,12 @@ export function insertUploadRecord(
   fileName: string,
   duration: number,
   summary: string,
+  saveFileName: string,
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     db.run(
-      'INSERT INTO uploads (upload_date, file_name, duration, summary) VALUES (?, ?, ?, ?)',
-      [uploadDate, fileName, duration, summary],
+      'INSERT INTO uploads (uploadDate, fileName, duration, summary, saveFileName) VALUES (?, ?, ?, ?, ?)',
+      [uploadDate, fileName, duration, summary, saveFileName],
       (err: Error | null) => {
         if (err) reject(err);
         else resolve();
@@ -34,16 +36,17 @@ export function insertUploadRecord(
 
 export interface UploadRecord {
   id: number;
-  upload_date: string;
-  file_name: string;
+  uploadDate: string;
+  fileName: string;
   duration: number;
   summary: string;
+  saveFileName: string;
 }
 
 export function getAllUploads(): Promise<UploadRecord[]> {
   return new Promise((resolve, reject) => {
     db.all(
-      'SELECT * FROM uploads ORDER BY upload_date DESC',
+      'SELECT * FROM uploads ORDER BY uploadDate DESC',
       (err: Error | null, rows: UploadRecord[]) => {
         if (err) reject(err);
         else resolve(rows);

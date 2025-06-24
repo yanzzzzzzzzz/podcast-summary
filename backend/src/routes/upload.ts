@@ -41,7 +41,7 @@ router.post('/summarize-transcript', upload.single('audio'), async (req: any, re
   try {
     const duration = await getAudioDuration(fullPath);
     const transcript = await GeminiSummarizeTranscript(fullPath);
-    await insertUploadRecord(uploadDate, fileName, duration, transcript);
+    await insertUploadRecord(uploadDate, fileName, duration, transcript, req.file.filename);
     res.json({
       message: 'Transcription successful',
       transcript,
@@ -58,7 +58,7 @@ router.post('/summarize-transcript', upload.single('audio'), async (req: any, re
 router.get('/summarize-transcript/list', async (req, res) => {
   try {
     const list = await getAllUploads();
-    res.json({ list });
+    res.json(list);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch uploads' });
   }

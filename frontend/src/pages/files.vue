@@ -16,9 +16,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="file in uploadedFiles" :key="file.filename + file.date">
-                <td>{{ file.date }}</td>
-                <td>{{ file.filename }}</td>
+              <tr v-for="file in uploadedFiles" :key="file.id">
+                <td>{{ file.uploadDate }}</td>
+                <td>{{ file.fileName }}</td>
                 <td>{{ file.duration }}</td>
               </tr>
             </tbody>
@@ -32,15 +32,16 @@
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
-
-const uploadedFiles = ref<Array<{ date: string; filename: string; duration: string }>>([]);
+import { UploadedFile } from '../models/UploadedFile';
+const uploadedFiles = ref<Array<UploadedFile>>([]);
 
 const fetchUploadedFiles = async () => {
   try {
-    const res = await fetch('/api/uploaded-files');
+    const res = await fetch('/api/summarize-transcript/list');
     if (!res.ok) throw new Error('無法取得上傳紀錄');
     const data = await res.json();
     uploadedFiles.value = data;
+    console.log('uploadedFiles.length', uploadedFiles.value.length);
   } catch (e) {
     uploadedFiles.value = [];
   }
