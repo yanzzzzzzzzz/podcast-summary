@@ -18,7 +18,11 @@
             <tbody>
               <tr v-for="file in uploadedFiles" :key="file.id">
                 <td>{{ file.uploadDate }}</td>
-                <td>{{ file.fileName }}</td>
+                <td>
+                  <router-link :to="`/files/${file.id}`">
+                    {{ file.fileName }}
+                  </router-link>
+                </td>
                 <td>{{ file.duration }}</td>
               </tr>
             </tbody>

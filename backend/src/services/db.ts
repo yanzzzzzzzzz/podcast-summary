@@ -55,6 +55,15 @@ export function getAllUploads(): Promise<UploadRecord[]> {
   });
 }
 
+export function getUploadById(id: number): Promise<UploadRecord | null> {
+  return new Promise((resolve, reject) => {
+    db.get('SELECT * FROM uploads WHERE id = ?', [id], (err: Error | null, row: UploadRecord) => {
+      if (err) reject(err);
+      else resolve(row || null);
+    });
+  });
+}
+
 init();
 
 export default db;

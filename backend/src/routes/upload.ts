@@ -3,7 +3,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { GeminiSummarizeTranscript } from '../services/gemini';
-import { insertUploadRecord, getAllUploads } from '../services/db';
+import { insertUploadRecord, getAllUploads, getUploadById } from '../services/db';
 import ffmpeg from 'fluent-ffmpeg';
 const router = express.Router();
 
@@ -61,6 +61,23 @@ router.get('/summarize-transcript/list', async (req, res) => {
     res.json(list);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch uploads' });
+  }
+});
+
+router.get('/summarize-transcript/:id', async (req: any, res: any) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: 'Invalid ID' });
+    }
+    const record = await getUploadById(id);
+    if (record) {
+      res.json(record);
+    } else {
+      res.status(404).json({ error: 'Record not found' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch upload' });
   }
 });
 
