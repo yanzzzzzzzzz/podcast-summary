@@ -41,7 +41,7 @@ const uploadedFiles = ref<Array<UploadedFile>>([]);
 
 const fetchUploadedFiles = async () => {
   try {
-    const res = await fetch('/api/summarize-transcript/list');
+    const res = await fetch('/api/summarize-transcript');
     if (!res.ok) throw new Error('無法取得上傳紀錄');
     const data = await res.json();
     uploadedFiles.value = data;
