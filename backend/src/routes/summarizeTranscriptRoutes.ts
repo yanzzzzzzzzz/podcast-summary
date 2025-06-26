@@ -5,10 +5,36 @@ import fs from 'fs';
 import { GeminiSummarizeTranscript } from '../services/gemini';
 import { insertUploadRecord, getAllUploads, getUploadById } from '../services/db';
 import ffmpeg from 'fluent-ffmpeg';
+import { fetchPodcastInfoFromUrl } from '../services/applePodcastInfo';
+
 const router = express.Router();
 
 const uploadDir = path.join(__dirname, '../../uploads');
 fs.mkdirSync(uploadDir, { recursive: true });
+
+function getAudioDuration(filePath: string): Promise<number> {
+  return new Promise((resolve, reject) => {
+    ffmpeg.ffprobe(filePath, (err, metadata) => {
+      if (err) reject(err);
+      else resolve(metadata.format.duration || 0);
+    });
+  });
+}
+
+async function downloadAudioFile(audioUrl: string): Promise<string> {
+  const response = await fetch(audioUrl);
+  if (!response.ok) {
+    throw new Error(`downloadAudioFile error: ${response.status}`);
+  }
+
+  const buffer = await response.arrayBuffer();
+  const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e5);
+  const fileName = `${uniqueSuffix}-podcast-audio.mp3`;
+  const filePath = path.join(uploadDir, fileName);
+
+  fs.writeFileSync(filePath, Buffer.from(buffer));
+  return filePath;
+}
 
 const storage = multer.diskStorage({
   destination: (_, __, cb) => cb(null, uploadDir),
@@ -29,21 +55,19 @@ router.post('/', upload.single('audio'), async (req: any, res: any) => {
   const fileName = req.file.originalname;
   const uploadDate = new Date().toISOString();
 
-  function getAudioDuration(filePath: string): Promise<number> {
-    return new Promise((resolve, reject) => {
-      ffmpeg.ffprobe(filePath, (err, metadata) => {
-        if (err) reject(err);
-        else resolve(metadata.format.duration || 0);
-      });
-    });
-  }
-
   try {
     const duration = await getAudioDuration(fullPath);
     const transcript = await GeminiSummarizeTranscript(fullPath);
-    await insertUploadRecord(uploadDate, fileName, duration, transcript, req.file.filename);
+    const recordId = await insertUploadRecord(
+      uploadDate,
+      fileName,
+      duration,
+      transcript,
+      req.file.filename,
+    );
     res.json({
       message: 'Transcription successful',
+      id: recordId,
       transcript,
       uploadDate,
       fileName,
@@ -55,12 +79,42 @@ router.post('/', upload.single('audio'), async (req: any, res: any) => {
   }
 });
 
-router.get('/', async (req, res) => {
+router.post('/by-url', async (req: any, res: any) => {
+  const { audioUrl } = req.body;
+  if (!audioUrl) {
+    return res.status(400).json({ error: 'No audio URL provided' });
+  }
+
   try {
-    const list = await getAllUploads();
-    res.json(list);
+    const podcastInfo = await fetchPodcastInfoFromUrl(audioUrl);
+
+    const downloadedFilePath = await downloadAudioFile(podcastInfo.audioUrl);
+    console.log('downloadedFilePath', downloadedFilePath);
+
+    const fileName = path.basename(downloadedFilePath);
+    const uploadDate = new Date().toISOString();
+
+    const duration = await getAudioDuration(downloadedFilePath);
+    console.log('duration', duration);
+
+    const transcript = await GeminiSummarizeTranscript(downloadedFilePath);
+    console.log('transcript', transcript);
+
+    const recordId = await insertUploadRecord(
+      uploadDate,
+      podcastInfo.episodeName,
+      duration,
+      transcript,
+      fileName,
+    );
+
+    res.json({
+      message: 'Podcast transcription successful',
+      id: recordId,
+    });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch uploads' });
+    console.error(err);
+    res.status(500).json({ error: 'Failed to process podcast' });
   }
 });
 

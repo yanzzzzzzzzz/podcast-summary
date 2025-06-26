@@ -21,14 +21,14 @@ export function insertUploadRecord(
   duration: number,
   summary: string,
   saveFileName: string,
-): Promise<void> {
+): Promise<number> {
   return new Promise((resolve, reject) => {
     db.run(
       'INSERT INTO uploads (uploadDate, fileName, duration, summary, saveFileName) VALUES (?, ?, ?, ?, ?)',
       [uploadDate, fileName, duration, summary, saveFileName],
-      (err: Error | null) => {
+      function (err: Error | null) {
         if (err) reject(err);
-        else resolve();
+        else resolve(this.lastID);
       },
     );
   });
