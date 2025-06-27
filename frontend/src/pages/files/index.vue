@@ -46,7 +46,7 @@
                   <span v-else class="text-caption text-medium-emphasis">-</span>
                 </td>
                 <td>{{ new Date(file.uploadDate).toLocaleDateString() }}</td>
-                <td>{{ Math.round(Number(file.duration)) }}秒</td>
+                <td>{{ formatDuration(Number(file.duration)) }}</td>
               </tr>
             </tbody>
           </v-table>
@@ -60,6 +60,8 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
 import type { UploadedFile } from '../../models/UploadedFile';
+import { formatDuration } from '../../utils/formatDuration';
+
 const uploadedFiles = ref<Array<UploadedFile>>([]);
 
 const fetchUploadedFiles = async () => {

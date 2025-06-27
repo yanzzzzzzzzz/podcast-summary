@@ -53,7 +53,7 @@
           <v-card-actions>
             <v-chip color="primary" label>
               <v-icon start icon="mdi-clock-outline"></v-icon>
-              時長: {{ file.duration }} 秒
+              時長: {{ file.duration != null ? formatDuration(Number(file.duration)) : '-' }}
             </v-chip>
             <v-spacer></v-spacer>
             <v-btn color="primary" variant="text" to="/files">返回列表</v-btn>
@@ -77,6 +77,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import type { UploadedFile } from '../../models/UploadedFile';
+import { formatDuration } from '../../utils/formatDuration';
 
 const route = useRoute();
 const file = ref<UploadedFile | null>(null);
