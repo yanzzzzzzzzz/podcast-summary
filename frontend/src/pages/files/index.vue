@@ -36,7 +36,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
-import { UploadedFile } from '../models/UploadedFile';
+import type { UploadedFile } from '../../models/UploadedFile';
 const uploadedFiles = ref<Array<UploadedFile>>([]);
 
 const fetchUploadedFiles = async () => {
