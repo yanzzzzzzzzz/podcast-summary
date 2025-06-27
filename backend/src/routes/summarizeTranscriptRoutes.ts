@@ -134,5 +134,13 @@ router.get('/:id', async (req: any, res: any) => {
     res.status(500).json({ error: 'Failed to fetch upload' });
   }
 });
+router.get('/', async (req, res) => {
+  try {
+    const list = await getAllUploads();
+    res.json(list);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch uploads' });
+  }
+});
 
 export default router;
