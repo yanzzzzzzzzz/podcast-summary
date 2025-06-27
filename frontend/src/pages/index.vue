@@ -17,16 +17,26 @@
           </v-tabs>
 
           <v-card-text>
-            <v-window v-model="tab" class="tab-content">
+            <v-window v-model="tab" class="tab-content my-1">
               <v-window-item value="url">
                 <v-form @submit.prevent="handleUrlSubmit">
                   <v-text-field
                     v-model="url"
                     label="請輸入音訊網址"
                     :disabled="loading"
-                    class="my-6"
+                    class="my-1"
                     required
                   ></v-text-field>
+                  <div class="mb-6">
+                    <span class="text-medium-emphasis mr-2">支援：</span>
+                    <v-chip
+                      color="deep-purple-accent-2"
+                      text-color="white"
+                      prepend-icon="mdi-podcast"
+                    >
+                      Apple Podcast
+                    </v-chip>
+                  </div>
                   <v-btn color="primary" :loading="loading" type="submit" block>開始</v-btn>
                 </v-form>
               </v-window-item>
