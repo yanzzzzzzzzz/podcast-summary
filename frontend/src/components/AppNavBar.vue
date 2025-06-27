@@ -2,7 +2,11 @@
   <v-app-bar color="primary">
     <v-container class="px-4">
       <div class="d-flex align-center" style="height: 100%">
-        <v-app-bar-title class="text-white font-weight-medium">語音摘要助手</v-app-bar-title>
+        <router-link to="/" style="text-decoration: none">
+          <v-app-bar-title class="text-white font-weight-medium" style="cursor: pointer"
+            >語音摘要助手</v-app-bar-title
+          >
+        </router-link>
 
         <v-spacer></v-spacer>
 
