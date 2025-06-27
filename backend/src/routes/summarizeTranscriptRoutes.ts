@@ -64,6 +64,10 @@ router.post('/', upload.single('audio'), async (req: any, res: any) => {
       duration,
       transcript,
       req.file.filename,
+      '',
+      '',
+      '',
+      '',
     );
     res.json({
       message: 'Transcription successful',
@@ -106,6 +110,10 @@ router.post('/by-url', async (req: any, res: any) => {
       duration,
       transcript,
       fileName,
+      podcastInfo.logoUrl,
+      podcastInfo.category,
+      podcastInfo.showName,
+      podcastInfo.audioUrl,
     );
 
     res.json({

@@ -11,7 +11,11 @@ const init = () => {
     fileName TEXT NOT NULL,
     duration REAL NOT NULL,
     summary TEXT,
-    saveFileName TEXT NOT NULL
+    saveFileName TEXT NOT NULL,
+    logoUrl TEXT,
+    category TEXT,
+    showName TEXT,
+    audioUrl TEXT
   )`);
 };
 
@@ -21,11 +25,25 @@ export function insertUploadRecord(
   duration: number,
   summary: string,
   saveFileName: string,
+  logoUrl: string,
+  category: string,
+  showName: string,
+  audioUrl: string,
 ): Promise<number> {
   return new Promise((resolve, reject) => {
     db.run(
-      'INSERT INTO uploads (uploadDate, fileName, duration, summary, saveFileName) VALUES (?, ?, ?, ?, ?)',
-      [uploadDate, fileName, duration, summary, saveFileName],
+      'INSERT INTO uploads (uploadDate, fileName, duration, summary, saveFileName, logoUrl, category, showName, audioUrl) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [
+        uploadDate,
+        fileName,
+        duration,
+        summary,
+        saveFileName,
+        logoUrl,
+        category,
+        showName,
+        audioUrl,
+      ],
       function (err: Error | null) {
         if (err) reject(err);
         else resolve(this.lastID);
@@ -41,6 +59,10 @@ export interface UploadRecord {
   duration: number;
   summary: string;
   saveFileName: string;
+  logoUrl: string;
+  category: string;
+  showName: string;
+  audioUrl: string;
 }
 
 export function getAllUploads(): Promise<UploadRecord[]> {
