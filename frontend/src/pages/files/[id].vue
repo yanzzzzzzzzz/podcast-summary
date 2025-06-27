@@ -3,6 +3,32 @@
     <v-row v-if="file" class="align-center justify-center">
       <v-col cols="12" sm="11" md="10" lg="8" xl="6">
         <v-card class="pa-4" elevation="5">
+          <div
+            v-if="file.logoUrl || file.showName || file.category || file.audioUrl"
+            class="mb-4 d-flex align-center"
+          >
+            <v-avatar v-if="file.logoUrl" size="64" class="mr-4">
+              <v-img :src="file.logoUrl" :alt="file.showName"></v-img>
+            </v-avatar>
+            <div>
+              <div v-if="file.showName" class="text-h6 font-weight-bold mb-1">
+                {{ file.showName }}
+              </div>
+              <v-chip v-if="file.category" color="primary" size="small" class="mb-1">{{
+                file.category
+              }}</v-chip>
+              <div v-if="file.audioUrl">
+                <a
+                  :href="file.audioUrl"
+                  target="_blank"
+                  rel="noopener"
+                  class="text-primary text-caption"
+                >
+                  <v-icon size="16" class="mr-1">mdi-link-variant</v-icon>音訊來源
+                </a>
+              </div>
+            </div>
+          </div>
           <v-card-title class="text-h4 font-weight-bold text-primary mb-4">
             {{ file.fileName }}
           </v-card-title>
@@ -50,7 +76,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { UploadedFile } from '../../models/UploadedFile';
+import type { UploadedFile } from '../../models/UploadedFile';
 
 const route = useRoute();
 const file = ref<UploadedFile | null>(null);
@@ -58,7 +84,8 @@ const loading = ref(true);
 
 const fetchFileDetails = async () => {
   try {
-    const id = route.params.id;
+    const id = (route.params as { id?: string }).id;
+    if (!id) throw new Error('無效的ID');
     const res = await fetch(`/api/summarize-transcript/${id}`);
     if (!res.ok) {
       throw new Error('無法取得檔案詳細資訊');
