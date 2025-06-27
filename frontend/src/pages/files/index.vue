@@ -10,20 +10,43 @@
           <v-table v-if="uploadedFiles.length > 0">
             <thead>
               <tr>
+                <th class="text-left">封面</th>
+                <th class="text-left">節目名稱</th>
+                <th class="text-left">單集名稱</th>
+                <th class="text-left">分類</th>
                 <th class="text-left">上傳日期</th>
-                <th class="text-left">檔案名稱</th>
                 <th class="text-left">音訊長度</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="file in uploadedFiles" :key="file.id">
-                <td>{{ file.uploadDate }}</td>
                 <td>
-                  <router-link :to="`/files/${file.id}`">
+                  <v-avatar v-if="file.logoUrl" size="40" class="mr-2">
+                    <v-img :src="file.logoUrl" :alt="file.showName"></v-img>
+                  </v-avatar>
+                  <v-avatar v-else size="40" class="mr-2 bg-grey">
+                    <v-icon>mdi-podcast</v-icon>
+                  </v-avatar>
+                </td>
+                <td>
+                  <div v-if="file.showName" class="text-body-2 font-weight-medium">
+                    {{ file.showName }}
+                  </div>
+                  <div v-else class="text-caption text-medium-emphasis">-</div>
+                </td>
+                <td>
+                  <router-link :to="`/files/${file.id}`" class="text-decoration-none">
                     {{ file.fileName }}
                   </router-link>
                 </td>
-                <td>{{ file.duration }}</td>
+                <td>
+                  <v-chip v-if="file.category" size="small" color="primary" variant="outlined">
+                    {{ file.category }}
+                  </v-chip>
+                  <span v-else class="text-caption text-medium-emphasis">-</span>
+                </td>
+                <td>{{ new Date(file.uploadDate).toLocaleDateString() }}</td>
+                <td>{{ Math.round(Number(file.duration)) }}秒</td>
               </tr>
             </tbody>
           </v-table>
