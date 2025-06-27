@@ -59,8 +59,8 @@
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
-import type { UploadedFile } from '../../models/UploadedFile';
-import { formatDuration } from '../../utils/formatDuration';
+import type { UploadedFile } from '@/models/UploadedFile';
+import { formatDuration } from '@/utils/formatDuration';
 
 const uploadedFiles = ref<Array<UploadedFile>>([]);
 
