@@ -76,8 +76,8 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import type { UploadedFile } from '../../models/UploadedFile';
-import { formatDuration } from '../../utils/formatDuration';
+import type { UploadedFile } from '@/models/UploadedFile';
+import { formatDuration } from '@/utils/formatDuration';
 
 const route = useRoute();
 const file = ref<UploadedFile | null>(null);
